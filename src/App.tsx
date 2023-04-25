@@ -1,35 +1,18 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { PublicRoute } from './routes';
-import { LazyRoutes as routes } from './01-lazyload/router/LazyRoutes';
-import { Suspense, lazy } from 'react';
-
-const LazyPublicRoute = lazy(() => import('./routes/PublicRoute'));
+import { LazyPage1, LazyPage2, LazyPage3 } from './01-lazyload/pages';
 
 export const App = () => {
     return (
-        <Suspense fallback={<span>Loading</span>}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path='/public/*' element={<LazyPublicRoute />}>
-                        {routes.map(({ Component, path, id }) => (
-                            <Route
-                                key={id}
-                                path={path}
-                                element={<Component />}
-                            />
-                        ))}
-
-                        <Route
-                            path='*'
-                            element={<Navigate to={'/public/lazy1'} replace />}
-                        />
-                    </Route>
-                    <Route
-                        path='/*'
-                        element={<Navigate to={'/public/lazy1'} replace />}
-                    />
-                </Routes>
-            </BrowserRouter>
-        </Suspense>
+        <BrowserRouter>
+            <Routes>
+                <Route path='/' element={<PublicRoute />}>
+                    <Route path='lazy1' element={<LazyPage1 />} />
+                    <Route path='lazy2' element={<LazyPage2 />} />
+                    <Route path='lazy3' element={<LazyPage3 />} />
+                </Route>
+                <Route path='/*' element={<Navigate to={'/lazy1'} replace />} />
+            </Routes>
+        </BrowserRouter>
     );
 };
