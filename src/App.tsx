@@ -1,39 +1,28 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import './App.css';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { PublicRoute } from './routes';
+import { LazyRoutes as routes } from './01-lazyload/router/LazyRoutes';
+import { Suspense } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0);
-
-  const num1 = 2;
-  if (num1 === count) {
-    console.log('hola');
-  }
-
-  return (
-    <div className='App'>
-      <div>
-        <a href='https://vitejs.dev' target='_blank'>
-          <img src='/vite.svg' className='logo' alt='Vite logo' />
-        </a>
-        <a href='https://reactjs.org' target='_blank'>
-          <img src={reactLogo} className='logo react' alt='React logo' />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  );
-}
-
-export default App;
+export const App = () => {
+    return (
+        <Suspense fallback={<span>Loading</span>}>
+            <BrowserRouter>
+                <Routes>
+                    <Route path='/' element={<PublicRoute />}>
+                        {routes.map(({ Component, path, id }) => (
+                            <Route
+                                key={id}
+                                path={path}
+                                element={<Component />}
+                            />
+                        ))}
+                    </Route>
+                    <Route
+                        path='/*'
+                        element={<Navigate to={routes[0].to} replace />}
+                    />
+                </Routes>
+            </BrowserRouter>
+        </Suspense>
+    );
+};
