@@ -11,3 +11,5 @@ export const PublicRoute = () => {
         </>
     );
 };
+
+export default PublicRoute;
